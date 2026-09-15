@@ -415,6 +415,70 @@
   .surface-card h3{ font-size: 15.5px; font-family: 'Manrope', sans-serif; font-weight: 600; }
   .surface-card p{ margin: 0; color: var(--mist); font-size: 13px; line-height: 1.6; }
 
+  /* ================= EXAMPLES ================= */
+  #examples{ --accent: var(--glow-2); }
+  .examples-grid{ display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+  .demo-tile{
+    position: relative; border: 1px solid var(--line); border-radius: var(--radius);
+    background: var(--bg-2); padding: 22px; display: flex; flex-direction: column; gap: 14px;
+    overflow: hidden;
+  }
+  .demo-stage{
+    flex: 1; min-height: 108px; display: flex; align-items: center; justify-content: center;
+    position: relative; border-radius: var(--radius-sm); background: var(--bg-3);
+    border: 1px solid var(--line-soft); overflow: hidden;
+  }
+  .demo-tile h3{ font-size: 14px; font-family:'Manrope',sans-serif; font-weight:600; }
+  .demo-tile .demo-cap{ margin:0; color: var(--mist); font-size: 12.5px; line-height: 1.55; }
+
+  .demo-kinetic{ display:flex; gap:3px; font-size: 22px; letter-spacing:.02em; color: var(--paper); }
+  .demo-kinetic span{ display:inline-block; animation: float-letter 3s ease-in-out infinite; }
+
+  .demo-gradient-text{
+    font-family:'Unbounded',sans-serif; font-weight:800; font-size: 26px;
+    background: linear-gradient(100deg, var(--glow), var(--glow-2), var(--glow-3), var(--glow));
+    background-size: 300% 100%;
+    -webkit-background-clip: text; background-clip: text; color: transparent;
+    animation: gradient-flow 4s linear infinite;
+  }
+
+  .demo-marquee-stage{ justify-content: flex-start; }
+  .demo-marquee{
+    display:flex; white-space: nowrap; font-size: 11px; letter-spacing: .1em;
+    color: var(--mist); animation: marquee-scroll 12s linear infinite;
+  }
+  .demo-marquee span{ padding-right: 4px; }
+  @keyframes marquee-scroll{ from{ transform: translateX(0); } to{ transform: translateX(-50%); } }
+
+  .demo-mag-card{
+    width: 84px; height: 84px; border-radius: 16px;
+    background: var(--bg-2); border: 1px solid var(--line);
+    display: flex; align-items: center; justify-content: center; color: var(--accent);
+    transform: perspective(600px) rotateX(var(--ry, 0deg)) rotateY(var(--rx, 0deg));
+    transition: transform .5s var(--ease), border-color .4s var(--ease), box-shadow .4s var(--ease);
+    touch-action: none;
+  }
+  .demo-mag-card.is-active{ border-color: var(--accent); box-shadow: 0 14px 30px -14px var(--accent-soft); }
+
+  .demo-spark-btn{
+    background: var(--bg-2); border: 1px solid var(--line); color: var(--paper);
+    padding: 12px 22px; border-radius: 999px; font-size: 11.5px; letter-spacing:.08em; text-transform: uppercase;
+    cursor: pointer; transition: transform .3s var(--ease), border-color .3s var(--ease), background .3s var(--ease);
+    -webkit-tap-highlight-color: transparent;
+  }
+  .demo-spark-btn:hover, .demo-spark-btn:active{ transform: translateY(-2px); border-color: var(--accent); background: var(--bg-3); }
+
+  .demo-blob{
+    width: 90px; height: 90px;
+    background: linear-gradient(135deg, var(--glow), var(--glow-2));
+    animation: blob-morph 7s ease-in-out infinite;
+  }
+  @keyframes blob-morph{
+    0%, 100%{ border-radius: 42% 58% 65% 35% / 45% 40% 60% 55%; }
+    34%{ border-radius: 60% 40% 30% 70% / 60% 45% 55% 40%; }
+    67%{ border-radius: 35% 65% 55% 45% / 30% 60% 40% 70%; }
+  }
+
   /* ================= COMPARE ================= */
   #compare{ --accent: var(--accent-extend); }
   .compare-table{ display: flex; flex-direction: column; border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; }
@@ -508,10 +572,18 @@
     50%{ transform: translateY(-16px) rotate(4deg); }
   }
 
+  /* touch / imprecise-pointer devices: mouse-follow effects don't translate well,
+     so we scale them back or hide them entirely for a smoother feel */
+  @media (hover: none), (pointer: coarse){
+    #cursor-glow{ display: none; }
+    .spark-particle{ display: none; }
+  }
+
   @media (max-width: 860px){
     .rules-grid{ grid-template-columns: 1fr; }
     .team-grid{ grid-template-columns: 1fr; }
     .surfaces-grid{ grid-template-columns: 1fr; }
+    .examples-grid{ grid-template-columns: 1fr; }
     .ct-row{ grid-template-columns: 1fr; gap: 4px; }
     .ct-col-head:not(:first-child){ margin-top: 4px; }
     .navlinks a:not(.navcta){ display: none; }
@@ -521,6 +593,29 @@
     .travel-x{ display: none; }
   }
 
+  /* phone-specific fine-tuning: tighter spacing, calmer scale, easier tap targets */
+  @media (max-width: 560px){
+    .slide{ padding: 96px 20px 32px; }
+    .topnav{ padding: 16px 18px; }
+    .navlinks{ gap: 14px; }
+    .navlinks a.navcta{ padding: 9px 14px; }
+    .progress-dots{ display: none; }
+    .section-heading{ font-size: clamp(24px, 7vw, 30px); margin-bottom: 12px; }
+    .section-sub{ font-size: 14px; margin-bottom: 22px; }
+    .floating-word .letter{ font-size: clamp(46px, 15vw, 78px); }
+    .hero-lede{ font-size: 15.5px; margin-top: 18px; }
+    .hero-meta{ gap: 18px 26px; }
+    .rule{ padding: 22px 18px; }
+    .surface-card{ padding: 20px; min-height: 0; }
+    .demo-tile{ padding: 18px; }
+    .demo-stage{ min-height: 92px; }
+    .ct-row{ padding: 14px 16px; }
+    .outro-title{ font-size: clamp(28px, 9vw, 40px); }
+    .cta-btn{ padding: 13px 20px; width: 100%; justify-content: center; }
+    .cta-row{ width: 100%; }
+    .watermark{ font-size: min(60vw, 320px); }
+  }
+
   @media (prefers-reduced-motion: reduce){
     html{ scroll-behavior: auto; }
     #glowfield, #cursor-glow{ display: none; }
@@ -528,10 +623,11 @@
     .floating-word .letter, .watermark, .bg-word, .scroll-cue .chev, .hero-3d-mark, .spectrum{ animation: none; transform: none; }
     .hero-3d-mark{ transform: rotateX(18deg) rotateY(-24deg) rotateZ(-3deg); opacity: 0.14; }
     .n-dot{ transition: opacity 0.1s linear; }
-    .slide, .rule, .surface-card, .ct-row, .navlinks a{ transition: none; }
+    .slide, .rule, .surface-card, .ct-row, .navlinks a, .demo-mag-card{ transition: none; }
     .js-anim .slide, .stagger-item, .hero-lede, .hero-meta, .scroll-cue{ opacity: 1; transform: none; animation:none; }
     #curtain{ display:none; }
     .travel-x{ display: none; }
+    .demo-kinetic span, .demo-gradient-text, .demo-marquee, .demo-blob{ animation: none; }
   }
 </style>
 
@@ -554,6 +650,7 @@
     <a href="#work">как мы работаем</a>
     <a href="#team">команда</a>
     <a href="#advantages">плюсы</a>
+    <a href="#examples">примеры</a>
     <a href="#compare">сравнение</a>
     <a href="https://t.me/xwias" target="_blank" rel="noopener" class="navcta">написать</a>
   </div>
@@ -564,6 +661,7 @@
   <a href="#work" class="pd" data-slide="work" data-label="работа"></a>
   <a href="#team" class="pd" data-slide="team" data-label="команда"></a>
   <a href="#advantages" class="pd" data-slide="advantages" data-label="плюсы"></a>
+  <a href="#examples" class="pd" data-slide="examples" data-label="примеры"></a>
   <a href="#compare" class="pd" data-slide="compare" data-label="сравнение"></a>
   <a href="#outro" class="pd" data-slide="outro" data-label="итог"></a>
 </div>
@@ -582,7 +680,7 @@
 
   <div class="slide-top">
     <span class="label">neerov × neelux</span>
-    <span class="idx">01 / 06</span>
+    <span class="idx">01 / 07</span>
   </div>
 
   <div class="slide-main">
@@ -609,7 +707,7 @@
 
   <div class="slide-top">
     <span class="label">Как мы работаем</span>
-    <span class="idx">02 / 06</span>
+    <span class="idx">02 / 07</span>
   </div>
 
   <div class="slide-main">
@@ -661,7 +759,7 @@
 
   <div class="slide-top">
     <span class="label">Команда</span>
-    <span class="idx">03 / 06</span>
+    <span class="idx">03 / 07</span>
   </div>
 
   <div class="slide-main">
@@ -697,7 +795,7 @@
 
   <div class="slide-top">
     <span class="label">Наши плюсы</span>
-    <span class="idx">04 / 06</span>
+    <span class="idx">04 / 07</span>
   </div>
 
   <div class="slide-main">
@@ -749,13 +847,86 @@
   </div>
 </section>
 
+<section class="slide" id="examples">
+  <span class="bg-word mono" aria-hidden="true" style="top:12%; left:4%; font-size:13px; opacity:0.1; --r:-2deg; --r2:2deg;">FX.05</span>
+  <span class="bg-word display" aria-hidden="true" style="bottom:8%; right:6%; font-size:64px; opacity:0.04; --r:2deg; --r2:-2deg; animation-delay:.5s;">x</span>
+
+  <div class="slide-top">
+    <span class="label">Примеры анимаций</span>
+    <span class="idx">05 / 07</span>
+  </div>
+
+  <div class="slide-main">
+    <h2 class="section-heading">Так выглядит <span class="hi">движение в интерфейсе</span></h2>
+    <p class="section-sub">Несколько приёмов, которые мы используем в сайтах и продуктах — та же анимация, что и на этой странице. Работает одинаково от мыши и от касания.</p>
+
+    <div class="examples-grid">
+      <div class="demo-tile stagger-item">
+        <div class="demo-stage">
+          <div class="demo-kinetic mono" aria-hidden="true">
+            <span style="animation-delay:0s;">N</span><span style="animation-delay:.12s;">E</span><span style="animation-delay:.24s;">E</span><span style="animation-delay:.36s;">L</span><span style="animation-delay:.48s;">U</span><span style="animation-delay:.6s;">X</span>
+          </div>
+        </div>
+        <h3>Кинетический текст</h3>
+        <p class="demo-cap">Буквы плавают независимо друг от друга — тот же приём, что в заголовке на первом экране.</p>
+      </div>
+
+      <div class="demo-tile stagger-item">
+        <div class="demo-stage">
+          <div class="demo-gradient-text">neelux</div>
+        </div>
+        <h3>Градиентный текст</h3>
+        <p class="demo-cap">Заливка бежит по контуру букв — используем в акцентных словах по всему сайту.</p>
+      </div>
+
+      <div class="demo-tile stagger-item">
+        <div class="demo-stage demo-marquee-stage">
+          <div class="demo-marquee mono"><span>NEELUX · СИСТЕМА · СКОРОСТЬ · ВКУС · </span><span aria-hidden="true">NEELUX · СИСТЕМА · СКОРОСТЬ · ВКУС · </span></div>
+        </div>
+        <h3>Бегущая лента</h3>
+        <p class="demo-cap">Бесконечный зацикленный скролл — хорошо работает для тегов, логотипов, статусов.</p>
+      </div>
+
+      <div class="demo-tile stagger-item">
+        <div class="demo-stage">
+          <div class="demo-mag-card" id="magTile">
+            <span class="mono">tilt</span>
+          </div>
+        </div>
+        <h3>Магнитный наклон</h3>
+        <p class="demo-cap">Карточка следует за курсором или пальцем — наведи или коснись, чтобы почувствовать.</p>
+      </div>
+
+      <div class="demo-tile stagger-item">
+        <div class="demo-stage">
+          <button class="demo-spark-btn mono" id="sparkBtn" type="button">нажми</button>
+        </div>
+        <h3>Искры по клику</h3>
+        <p class="demo-cap">Та же частица, что летит за курсором на сайте — здесь запускается тапом или кликом.</p>
+      </div>
+
+      <div class="demo-tile stagger-item">
+        <div class="demo-stage">
+          <div class="demo-blob"></div>
+        </div>
+        <h3>Морфинг формы</h3>
+        <p class="demo-cap">Форма непрерывно меняется через анимацию border-radius — фон для акцентных блоков.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="slide-bottom">
+    <span class="mono" style="font-size:11px; color:var(--mist-dim); letter-spacing:0.12em;">EXAMPLES.V01</span>
+  </div>
+</section>
+
 <section class="slide" id="compare">
   <span class="bg-word display" aria-hidden="true" style="top:10%; left:5%; font-size:60px; opacity:0.045; --r:-2deg; --r2:2deg;">nee</span>
   <span class="bg-word mono" aria-hidden="true" style="bottom:12%; right:4%; font-size:13px; opacity:0.09; --r:2deg; --r2:-1deg; animation-delay:.7s;">v01.COMPARE</span>
 
   <div class="slide-top">
     <span class="label">Сравнение</span>
-    <span class="idx">05 / 06</span>
+    <span class="idx">06 / 07</span>
   </div>
 
   <div class="slide-main">
@@ -809,7 +980,7 @@
 <section class="slide slide-outro" id="outro">
   <div class="slide-top">
     <span class="label" style="color:var(--paper);">Итог</span>
-    <span class="idx">06 / 06</span>
+    <span class="idx">07 / 07</span>
   </div>
 
   <div class="slide-main" style="align-items:flex-start;">
@@ -901,6 +1072,7 @@
     work:       { top: '78%', left: '8%'  },
     team:       { top: '15%', left: '89%' },
     advantages: { top: '80%', left: '90%' },
+    examples:   { top: '18%', left: '10%' },
     compare:    { top: '17%', left: '7%'  },
     outro:      { top: '74%', left: '13%' }
   };
@@ -960,11 +1132,16 @@
   var slides = document.querySelectorAll('.slide');
   var dots = document.querySelectorAll('.pd');
   if ('IntersectionObserver' in window){
+    /* rootMargin shrinks the trigger area to a thin band across the middle
+       of the viewport — a slide is "current" once it crosses that band.
+       This works regardless of a slide's own height (a ratio-based
+       threshold fails once a slide is taller than ~2x the viewport,
+       which some slides are on phones). */
     var io = new IntersectionObserver(function(entries){
       entries.forEach(function(entry){
         var id = entry.target.id;
         var dot = document.querySelector('.pd[data-slide="' + id + '"]');
-        if (entry.isIntersecting && entry.intersectionRatio > 0.5){
+        if (entry.isIntersecting){
           entry.target.classList.add('in-view');
           dots.forEach(function(d){ d.classList.remove('active'); });
           if (dot) dot.classList.add('active');
@@ -981,7 +1158,7 @@
           }
         }
       });
-    }, { threshold: [0, 0.5, 1] });
+    }, { rootMargin: '-45% 0px -45% 0px', threshold: 0 });
     slides.forEach(function(s){ io.observe(s); });
   } else {
     slides.forEach(function(s){ s.classList.add('in-view'); });
@@ -1032,41 +1209,97 @@
     group.appendChild(frag);
   })();
 
+  /* ---- demo tiles (examples section): touch + mouse friendly, always on ---- */
+  (function(){
+    var magTile = document.getElementById('magTile');
+    if (magTile){
+      var magMove = function(clientX, clientY){
+        var rect = magTile.getBoundingClientRect();
+        var rx = ((clientX - rect.left) / rect.width - 0.5) * 16;
+        var ry = ((clientY - rect.top) / rect.height - 0.5) * -16;
+        magTile.style.setProperty('--rx', rx + 'deg');
+        magTile.style.setProperty('--ry', ry + 'deg');
+        magTile.classList.add('is-active');
+      };
+      var magReset = function(){
+        magTile.style.setProperty('--rx', '0deg');
+        magTile.style.setProperty('--ry', '0deg');
+        magTile.classList.remove('is-active');
+      };
+      if (!reduced){
+        magTile.addEventListener('pointermove', function(e){ magMove(e.clientX, e.clientY); });
+        magTile.addEventListener('pointerleave', magReset);
+        magTile.addEventListener('touchmove', function(e){
+          if (e.touches && e.touches[0]){ magMove(e.touches[0].clientX, e.touches[0].clientY); e.preventDefault(); }
+        }, { passive: false });
+        magTile.addEventListener('touchend', magReset);
+      }
+    }
+
+    function spawnSparkAt(x, y){
+      var p = document.createElement('span');
+      p.className = 'spark-particle';
+      p.style.left = x + 'px';
+      p.style.top = y + 'px';
+      document.body.appendChild(p);
+      p.addEventListener('animationend', function(){ p.remove(); });
+    }
+    var sparkBtn = document.getElementById('sparkBtn');
+    if (sparkBtn){
+      sparkBtn.addEventListener('click', function(){
+        var rect = sparkBtn.getBoundingClientRect();
+        for (var i = 0; i < 8; i++){
+          setTimeout(function(){
+            var x = rect.left + rect.width / 2 + (Math.random() - 0.5) * rect.width;
+            var y = rect.top + rect.height / 2 + (Math.random() - 0.5) * rect.height * 0.6;
+            spawnSparkAt(x, y);
+          }, i * 30);
+        }
+      });
+    }
+  })();
+
   if (reduced) return;
 
   document.documentElement.classList.add('js-anim');
 
-  /* ---- eased cursor-follow glow + spark trail ---- */
-  var cursorGlow = document.getElementById('cursor-glow');
-  var pointerX = window.innerWidth / 2, pointerY = window.innerHeight / 2;
-  var glowX = pointerX, glowY = pointerY;
-  var hasPointer = false;
-  var lastSpark = 0;
+  /* mouse-follow effects below only make sense with a precise, hover-capable
+     pointer — skip them on touch so nothing feels janky or wastes battery */
+  var fineHover = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
 
-  window.addEventListener('pointermove', function(e){
-    pointerX = e.clientX;
-    pointerY = e.clientY;
-    if (!hasPointer){ hasPointer = true; cursorGlow.classList.add('is-active'); }
-    var now = performance.now();
-    if (now - lastSpark > 90){
-      lastSpark = now;
-      var p = document.createElement('span');
-      p.className = 'spark-particle';
-      p.style.left = e.clientX + 'px';
-      p.style.top = e.clientY + 'px';
-      document.body.appendChild(p);
-      p.addEventListener('animationend', function(){ p.remove(); });
+  if (fineHover){
+    /* ---- eased cursor-follow glow + spark trail ---- */
+    var cursorGlow = document.getElementById('cursor-glow');
+    var pointerX = window.innerWidth / 2, pointerY = window.innerHeight / 2;
+    var glowX = pointerX, glowY = pointerY;
+    var hasPointer = false;
+    var lastSpark = 0;
+
+    window.addEventListener('pointermove', function(e){
+      pointerX = e.clientX;
+      pointerY = e.clientY;
+      if (!hasPointer){ hasPointer = true; cursorGlow.classList.add('is-active'); }
+      var now = performance.now();
+      if (now - lastSpark > 90){
+        lastSpark = now;
+        var p = document.createElement('span');
+        p.className = 'spark-particle';
+        p.style.left = e.clientX + 'px';
+        p.style.top = e.clientY + 'px';
+        document.body.appendChild(p);
+        p.addEventListener('animationend', function(){ p.remove(); });
+      }
+    });
+    window.addEventListener('pointerleave', function(){ cursorGlow.classList.remove('is-active'); });
+
+    function tickCursor(){
+      glowX += (pointerX - glowX) * 0.07;
+      glowY += (pointerY - glowY) * 0.07;
+      cursorGlow.style.transform = 'translate(' + glowX + 'px,' + glowY + 'px)';
+      requestAnimationFrame(tickCursor);
     }
-  });
-  window.addEventListener('pointerleave', function(){ cursorGlow.classList.remove('is-active'); });
-
-  function tickCursor(){
-    glowX += (pointerX - glowX) * 0.07;
-    glowY += (pointerY - glowY) * 0.07;
-    cursorGlow.style.transform = 'translate(' + glowX + 'px,' + glowY + 'px)';
     requestAnimationFrame(tickCursor);
   }
-  requestAnimationFrame(tickCursor);
 
   /* ---- hero 3D mark parallax ---- */
   var heroMark = document.querySelector('.hero-3d-mark');
@@ -1086,7 +1319,7 @@
   }
   function resetDots(){ updateDots(-9999, -9999); }
 
-  if (heroSlide && heroMark){
+  if (heroSlide && heroMark && fineHover){
     heroSlide.addEventListener('pointermove', function(e){
       var r = heroSlide.getBoundingClientRect();
       var px = (e.clientX - r.left) / r.width - 0.5;
@@ -1109,28 +1342,32 @@
       heroMark.style.transform = 'rotateX(' + curRX + 'deg) rotateY(' + curRY + 'deg) rotateZ(-3deg)';
       requestAnimationFrame(tickHero);
     })();
+  } else if (heroMark){
+    heroMark.style.transform = 'rotateX(' + baseRX + 'deg) rotateY(' + baseRY + 'deg) rotateZ(-3deg)';
   }
 
   /* ---- spotlight + magnetic tilt on cards ---- */
-  var spotlightEls = document.querySelectorAll('.rule, .surface-card');
-  spotlightEls.forEach(function(el){
-    el.addEventListener('pointermove', function(e){
-      var rect = el.getBoundingClientRect();
-      var mx = ((e.clientX - rect.left) / rect.width) * 100;
-      var my = ((e.clientY - rect.top) / rect.height) * 100;
-      el.style.setProperty('--mx', mx + '%');
-      el.style.setProperty('--my', my + '%');
-      if (el.classList.contains('surface-card')){
-        var rx = ((e.clientX - rect.left) / rect.width - 0.5) * 6;
-        var ry = ((e.clientY - rect.top) / rect.height - 0.5) * -6;
-        el.style.setProperty('--rx', rx + 'deg');
-        el.style.setProperty('--ry', ry + 'deg');
-      }
+  if (fineHover){
+    var spotlightEls = document.querySelectorAll('.rule, .surface-card');
+    spotlightEls.forEach(function(el){
+      el.addEventListener('pointermove', function(e){
+        var rect = el.getBoundingClientRect();
+        var mx = ((e.clientX - rect.left) / rect.width) * 100;
+        var my = ((e.clientY - rect.top) / rect.height) * 100;
+        el.style.setProperty('--mx', mx + '%');
+        el.style.setProperty('--my', my + '%');
+        if (el.classList.contains('surface-card')){
+          var rx = ((e.clientX - rect.left) / rect.width - 0.5) * 6;
+          var ry = ((e.clientY - rect.top) / rect.height - 0.5) * -6;
+          el.style.setProperty('--rx', rx + 'deg');
+          el.style.setProperty('--ry', ry + 'deg');
+        }
+      });
+      el.addEventListener('pointerleave', function(){
+        el.style.setProperty('--rx', '0deg');
+        el.style.setProperty('--ry', '0deg');
+      });
     });
-    el.addEventListener('pointerleave', function(){
-      el.style.setProperty('--rx', '0deg');
-      el.style.setProperty('--ry', '0deg');
-    });
-  });
+  }
 })();
 </script>
