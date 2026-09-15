@@ -415,7 +415,7 @@
   .surface-card h3{ font-size: 15.5px; font-family: 'Manrope', sans-serif; font-weight: 600; }
   .surface-card p{ margin: 0; color: var(--mist); font-size: 13px; line-height: 1.6; }
 
-  /* ================= EXAMPLES ================= */
+  /* ================= EXAMPLES (interactive board) ================= */
   #examples{ --accent: var(--glow-2); }
   .examples-grid{ display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
   .demo-tile{
@@ -424,60 +424,87 @@
     overflow: hidden;
   }
   .demo-stage{
-    flex: 1; min-height: 108px; display: flex; align-items: center; justify-content: center;
+    flex: 1; min-height: 128px; display: flex; align-items: center; justify-content: center;
     position: relative; border-radius: var(--radius-sm); background: var(--bg-3);
     border: 1px solid var(--line-soft); overflow: hidden;
   }
-  .demo-tile h3{ font-size: 14px; font-family:'Manrope',sans-serif; font-weight:600; }
+  .demo-tile h3{ font-size: 14px; font-family:'Manrope',sans-serif; font-weight:600; display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
   .demo-tile .demo-cap{ margin:0; color: var(--mist); font-size: 12.5px; line-height: 1.55; }
-
-  .demo-kinetic{ display:flex; gap:3px; font-size: 22px; letter-spacing:.02em; color: var(--paper); }
-  .demo-kinetic span{ display:inline-block; animation: float-letter 3s ease-in-out infinite; }
-
-  .demo-gradient-text{
-    font-family:'Unbounded',sans-serif; font-weight:800; font-size: 26px;
-    background: linear-gradient(100deg, var(--glow), var(--glow-2), var(--glow-3), var(--glow));
-    background-size: 300% 100%;
-    -webkit-background-clip: text; background-clip: text; color: transparent;
-    animation: gradient-flow 4s linear infinite;
+  .demo-chip{
+    font-family:'JetBrains Mono',monospace; font-size:9.5px; letter-spacing:.05em; text-transform:uppercase;
+    color: var(--accent); border:1px solid var(--accent-soft); border-radius:999px; padding:3px 9px; font-weight:500;
   }
 
-  .demo-marquee-stage{ justify-content: flex-start; }
-  .demo-marquee{
-    display:flex; white-space: nowrap; font-size: 11px; letter-spacing: .1em;
-    color: var(--mist); animation: marquee-scroll 12s linear infinite;
+  /* -- 1: drag-and-fling tokens -- */
+  .demo-playground{ touch-action: none; }
+  .demo-token{
+    position:absolute; width:32px; height:32px; border-radius:50%;
+    background: var(--c, var(--glow)); left:0; top:0;
+    box-shadow: 0 0 16px 2px color-mix(in srgb, var(--c, var(--glow)) 45%, transparent);
+    cursor: grab; touch-action:none; will-change: transform;
   }
-  .demo-marquee span{ padding-right: 4px; }
-  @keyframes marquee-scroll{ from{ transform: translateX(0); } to{ transform: translateX(-50%); } }
+  .demo-token.is-grabbed{ cursor: grabbing; }
 
-  .demo-mag-card{
-    width: 84px; height: 84px; border-radius: 16px;
+  /* -- 2: swipe stack -- */
+  .demo-swipe-stage{ touch-action: none; }
+  .demo-swipe-card{
+    width: 68%; max-width: 130px; aspect-ratio: 3/4; border-radius: 14px;
+    background: var(--bg-2); border: 1px solid var(--line);
+    display:flex; align-items:center; justify-content:center;
+    font-family:'Unbounded',sans-serif; font-weight:800; font-size:26px; color: var(--paper);
+    box-shadow: 0 18px 30px -18px rgba(0,0,0,.6);
+    cursor: grab; touch-action: none; will-change: transform;
+    transition: transform .35s var(--ease), opacity .35s var(--ease);
+  }
+  .demo-swipe-card:active{ cursor: grabbing; }
+  .demo-swipe-card.dragging{ transition: none; }
+
+  /* -- 3: charge & release -- */
+  .demo-charge-btn{
+    position: relative; width: 78px; height: 78px; border-radius: 50%;
+    background:
+      radial-gradient(circle, var(--bg-2) 0 58%, transparent 60%),
+      conic-gradient(var(--accent) calc(var(--p, 0) * 1%), var(--line) 0);
+    border: none; display:flex; align-items:center; justify-content:center;
+    color: var(--paper); font-family:'JetBrains Mono',monospace; font-size:10.5px; letter-spacing:.05em; text-transform:uppercase;
+    cursor: pointer; touch-action: none; -webkit-tap-highlight-color: transparent;
+  }
+
+  /* -- 4: tilt (gyroscope / pointer fallback) -- */
+  .demo-tilt-card{
+    width: 82px; height: 82px; border-radius: 16px;
     background: var(--bg-2); border: 1px solid var(--line);
     display: flex; align-items: center; justify-content: center; color: var(--accent);
     transform: perspective(600px) rotateX(var(--ry, 0deg)) rotateY(var(--rx, 0deg));
-    transition: transform .5s var(--ease), border-color .4s var(--ease), box-shadow .4s var(--ease);
+    transition: transform .4s var(--ease), border-color .4s var(--ease), box-shadow .4s var(--ease);
     touch-action: none;
   }
-  .demo-mag-card.is-active{ border-color: var(--accent); box-shadow: 0 14px 30px -14px var(--accent-soft); }
+  .demo-tilt-card.is-active{ border-color: var(--accent); box-shadow: 0 14px 30px -14px var(--accent-soft); }
 
-  .demo-spark-btn{
-    background: var(--bg-2); border: 1px solid var(--line); color: var(--paper);
-    padding: 12px 22px; border-radius: 999px; font-size: 11.5px; letter-spacing:.08em; text-transform: uppercase;
-    cursor: pointer; transition: transform .3s var(--ease), border-color .3s var(--ease), background .3s var(--ease);
-    -webkit-tap-highlight-color: transparent;
-  }
-  .demo-spark-btn:hover, .demo-spark-btn:active{ transform: translateY(-2px); border-color: var(--accent); background: var(--bg-3); }
-
-  .demo-blob{
-    width: 90px; height: 90px;
+  /* -- 5: pinch to scale -- */
+  .demo-pinch-stage{ touch-action: none; }
+  .demo-pinch-shape{
+    width: 62px; height: 62px; border-radius: 30% 70% 65% 35% / 40% 45% 55% 60%;
     background: linear-gradient(135deg, var(--glow), var(--glow-2));
-    animation: blob-morph 7s ease-in-out infinite;
+    transform: scale(var(--s, 1));
+    will-change: transform;
   }
-  @keyframes blob-morph{
-    0%, 100%{ border-radius: 42% 58% 65% 35% / 45% 40% 60% 55%; }
-    34%{ border-radius: 60% 40% 30% 70% / 60% 45% 55% 40%; }
-    67%{ border-radius: 35% 65% 55% 45% / 30% 60% 40% 70%; }
+
+  /* -- 6: haptic tap -- */
+  .demo-haptic-btn{
+    position: relative; background: var(--bg-2); border: 1px solid var(--line); color: var(--paper);
+    padding: 14px 24px; border-radius: 999px; font-size: 11.5px; letter-spacing:.08em; text-transform: uppercase;
+    cursor: pointer; overflow: hidden; touch-action: manipulation; -webkit-tap-highlight-color: transparent;
+    font-family:'JetBrains Mono',monospace;
+    transition: transform .2s var(--ease), border-color .3s var(--ease);
   }
+  .demo-haptic-btn:active{ transform: scale(.94); border-color: var(--accent); }
+  .demo-ripple{
+    position:absolute; border-radius:50%; background: var(--accent-soft);
+    transform: translate(-50%,-50%) scale(0); pointer-events:none;
+    animation: demo-ripple-out .6s var(--ease) forwards;
+  }
+  @keyframes demo-ripple-out{ to{ transform: translate(-50%,-50%) scale(1); opacity:0; } }
 
   /* ================= COMPARE ================= */
   #compare{ --accent: var(--accent-extend); }
@@ -608,7 +635,7 @@
     .rule{ padding: 22px 18px; }
     .surface-card{ padding: 20px; min-height: 0; }
     .demo-tile{ padding: 18px; }
-    .demo-stage{ min-height: 92px; }
+    .demo-stage{ min-height: 118px; }
     .ct-row{ padding: 14px 16px; }
     .outro-title{ font-size: clamp(28px, 9vw, 40px); }
     .cta-btn{ padding: 13px 20px; width: 100%; justify-content: center; }
@@ -623,11 +650,10 @@
     .floating-word .letter, .watermark, .bg-word, .scroll-cue .chev, .hero-3d-mark, .spectrum{ animation: none; transform: none; }
     .hero-3d-mark{ transform: rotateX(18deg) rotateY(-24deg) rotateZ(-3deg); opacity: 0.14; }
     .n-dot{ transition: opacity 0.1s linear; }
-    .slide, .rule, .surface-card, .ct-row, .navlinks a, .demo-mag-card{ transition: none; }
+    .slide, .rule, .surface-card, .ct-row, .navlinks a, .demo-tilt-card, .demo-swipe-card{ transition: none; }
     .js-anim .slide, .stagger-item, .hero-lede, .hero-meta, .scroll-cue{ opacity: 1; transform: none; animation:none; }
     #curtain{ display:none; }
     .travel-x{ display: none; }
-    .demo-kinetic span, .demo-gradient-text, .demo-marquee, .demo-blob{ animation: none; }
   }
 </style>
 
@@ -857,66 +883,68 @@
   </div>
 
   <div class="slide-main">
-    <h2 class="section-heading">Так выглядит <span class="hi">движение в интерфейсе</span></h2>
-    <p class="section-sub">Несколько приёмов, которые мы используем в сайтах и продуктах — та же анимация, что и на этой странице. Работает одинаково от мыши и от касания.</p>
+    <h2 class="section-heading">Интерактивная доска — <span class="hi">потрогай сам</span></h2>
+    <p class="section-sub">Ничего декоративного: каждая плитка по-настоящему реагирует на палец или мышь. Пара приёмов работает только на телефоне — так и подписано.</p>
 
     <div class="examples-grid">
       <div class="demo-tile stagger-item">
-        <div class="demo-stage">
-          <div class="demo-kinetic mono" aria-hidden="true">
-            <span style="animation-delay:0s;">N</span><span style="animation-delay:.12s;">E</span><span style="animation-delay:.24s;">E</span><span style="animation-delay:.36s;">L</span><span style="animation-delay:.48s;">U</span><span style="animation-delay:.6s;">X</span>
-          </div>
+        <div class="demo-stage demo-playground" id="playgroundStage">
+          <div class="demo-token" style="--c:var(--glow);"></div>
+          <div class="demo-token" style="--c:var(--glow-2);"></div>
+          <div class="demo-token" style="--c:var(--glow-3);"></div>
         </div>
-        <h3>Кинетический текст</h3>
-        <p class="demo-cap">Буквы плавают независимо друг от друга — тот же приём, что в заголовке на первом экране.</p>
+        <h3>Перетаскивание <span class="demo-chip">мышь и палец</span></h3>
+        <p class="demo-cap">Хватай и кидай — шарики летят по инерции и отскакивают от краёв.</p>
+      </div>
+
+      <div class="demo-tile stagger-item">
+        <div class="demo-stage demo-swipe-stage" id="swipeStage">
+          <div class="demo-swipe-card">N</div>
+          <div class="demo-swipe-card">E</div>
+          <div class="demo-swipe-card">X</div>
+        </div>
+        <h3>Смахни карту <span class="demo-chip">свайп</span></h3>
+        <p class="demo-cap">Смахни влево или вправо — как в карточных интерфейсах на телефоне.</p>
       </div>
 
       <div class="demo-tile stagger-item">
         <div class="demo-stage">
-          <div class="demo-gradient-text">neelux</div>
+          <button class="demo-charge-btn mono" id="chargeBtn" type="button" style="--p:0;">держи</button>
         </div>
-        <h3>Градиентный текст</h3>
-        <p class="demo-cap">Заливка бежит по контуру букв — используем в акцентных словах по всему сайту.</p>
-      </div>
-
-      <div class="demo-tile stagger-item">
-        <div class="demo-stage demo-marquee-stage">
-          <div class="demo-marquee mono"><span>NEELUX · СИСТЕМА · СКОРОСТЬ · ВКУС · </span><span aria-hidden="true">NEELUX · СИСТЕМА · СКОРОСТЬ · ВКУС · </span></div>
-        </div>
-        <h3>Бегущая лента</h3>
-        <p class="demo-cap">Бесконечный зацикленный скролл — хорошо работает для тегов, логотипов, статусов.</p>
+        <h3>Заряд <span class="demo-chip">долгое нажатие</span></h3>
+        <p class="demo-cap">Зажми и не отпускай — кольцо заполнится, и заряд выстрелит искрами.</p>
       </div>
 
       <div class="demo-tile stagger-item">
         <div class="demo-stage">
-          <div class="demo-mag-card" id="magTile">
+          <div class="demo-tilt-card" id="tiltCard">
             <span class="mono">tilt</span>
           </div>
         </div>
-        <h3>Магнитный наклон</h3>
-        <p class="demo-cap">Карточка следует за курсором или пальцем — наведи или коснись, чтобы почувствовать.</p>
+        <h3>Наклон <span class="demo-chip">📱 гироскоп</span></h3>
+        <p class="demo-cap">На телефоне — наклони его физически. На компьютере — води мышью.</p>
+      </div>
+
+      <div class="demo-tile stagger-item">
+        <div class="demo-stage demo-pinch-stage" id="pinchStage">
+          <div class="demo-pinch-shape" id="pinchShape"></div>
+        </div>
+        <h3>Щипок <span class="demo-chip">📱 масштаб</span></h3>
+        <p class="demo-cap">Сведи и разведи два пальца. На компьютере — колесо мыши.</p>
       </div>
 
       <div class="demo-tile stagger-item">
         <div class="demo-stage">
-          <button class="demo-spark-btn mono" id="sparkBtn" type="button">нажми</button>
+          <button class="demo-haptic-btn mono" id="hapticBtn" type="button">нажми</button>
         </div>
-        <h3>Искры по клику</h3>
-        <p class="demo-cap">Та же частица, что летит за курсором на сайте — здесь запускается тапом или кликом.</p>
-      </div>
-
-      <div class="demo-tile stagger-item">
-        <div class="demo-stage">
-          <div class="demo-blob"></div>
-        </div>
-        <h3>Морфинг формы</h3>
-        <p class="demo-cap">Форма непрерывно меняется через анимацию border-radius — фон для акцентных блоков.</p>
+        <h3>Вибро-отклик <span class="demo-chip">📱 вибрация</span></h3>
+        <p class="demo-cap">На Android почувствуешь короткую вибрацию. Визуальный отклик — везде.</p>
       </div>
     </div>
   </div>
 
   <div class="slide-bottom">
-    <span class="mono" style="font-size:11px; color:var(--mist-dim); letter-spacing:0.12em;">EXAMPLES.V01</span>
+    <span class="mono" style="font-size:11px; color:var(--mist-dim); letter-spacing:0.12em;">EXAMPLES.V02</span>
   </div>
 </section>
 
@@ -1209,33 +1237,10 @@
     group.appendChild(frag);
   })();
 
-  /* ---- demo tiles (examples section): touch + mouse friendly, always on ---- */
+  /* ---- interactive examples board: pointer events unify mouse + touch,
+         plus a couple of genuinely phone-only tricks (gyroscope, pinch,
+         vibration) with sane fallbacks everywhere else ---- */
   (function(){
-    var magTile = document.getElementById('magTile');
-    if (magTile){
-      var magMove = function(clientX, clientY){
-        var rect = magTile.getBoundingClientRect();
-        var rx = ((clientX - rect.left) / rect.width - 0.5) * 16;
-        var ry = ((clientY - rect.top) / rect.height - 0.5) * -16;
-        magTile.style.setProperty('--rx', rx + 'deg');
-        magTile.style.setProperty('--ry', ry + 'deg');
-        magTile.classList.add('is-active');
-      };
-      var magReset = function(){
-        magTile.style.setProperty('--rx', '0deg');
-        magTile.style.setProperty('--ry', '0deg');
-        magTile.classList.remove('is-active');
-      };
-      if (!reduced){
-        magTile.addEventListener('pointermove', function(e){ magMove(e.clientX, e.clientY); });
-        magTile.addEventListener('pointerleave', magReset);
-        magTile.addEventListener('touchmove', function(e){
-          if (e.touches && e.touches[0]){ magMove(e.touches[0].clientX, e.touches[0].clientY); e.preventDefault(); }
-        }, { passive: false });
-        magTile.addEventListener('touchend', magReset);
-      }
-    }
-
     function spawnSparkAt(x, y){
       var p = document.createElement('span');
       p.className = 'spark-particle';
@@ -1244,17 +1249,288 @@
       document.body.appendChild(p);
       p.addEventListener('animationend', function(){ p.remove(); });
     }
-    var sparkBtn = document.getElementById('sparkBtn');
-    if (sparkBtn){
-      sparkBtn.addEventListener('click', function(){
-        var rect = sparkBtn.getBoundingClientRect();
-        for (var i = 0; i < 8; i++){
-          setTimeout(function(){
-            var x = rect.left + rect.width / 2 + (Math.random() - 0.5) * rect.width;
-            var y = rect.top + rect.height / 2 + (Math.random() - 0.5) * rect.height * 0.6;
-            spawnSparkAt(x, y);
-          }, i * 30);
+
+    /* -- 1: drag-and-fling tokens -- */
+    var stage = document.getElementById('playgroundStage');
+    if (stage){
+      var tokEls = Array.prototype.slice.call(stage.querySelectorAll('.demo-token'));
+      var toks = tokEls.map(function(el){
+        return { el: el, r: 16, x: 0, y: 0, vx: 0, vy: 0, dragging: false, lastX: 0, lastY: 0, lastT: 0 };
+      });
+      function renderTok(t){ t.el.style.transform = 'translate(' + (t.x - t.r) + 'px,' + (t.y - t.r) + 'px)'; }
+      function placeToks(){
+        var w = stage.clientWidth, h = stage.clientHeight;
+        toks.forEach(function(t, i){
+          if (!t.dragging){
+            t.x = w * (0.25 + i * 0.25);
+            t.y = h * 0.5 + (i % 2 ? -14 : 14);
+          }
+          renderTok(t);
+        });
+      }
+      function clampTok(t){
+        var w = stage.clientWidth, h = stage.clientHeight;
+        if (t.x < t.r){ t.x = t.r; t.vx = Math.abs(t.vx) * 0.55; }
+        if (t.x > w - t.r){ t.x = w - t.r; t.vx = -Math.abs(t.vx) * 0.55; }
+        if (t.y < t.r){ t.y = t.r; t.vy = Math.abs(t.vy) * 0.55; }
+        if (t.y > h - t.r){ t.y = h - t.r; t.vy = -Math.abs(t.vy) * 0.55; }
+      }
+      var tokRaf = null;
+      function tokTick(){
+        var moving = false;
+        toks.forEach(function(t){
+          if (t.dragging) return;
+          if (Math.abs(t.vx) > 0.02 || Math.abs(t.vy) > 0.02){
+            t.x += t.vx; t.y += t.vy;
+            t.vx *= 0.965; t.vy *= 0.965;
+            clampTok(t);
+            renderTok(t);
+            moving = true;
+          }
+        });
+        tokRaf = moving ? requestAnimationFrame(tokTick) : null;
+      }
+      toks.forEach(function(t){
+        t.el.addEventListener('pointerdown', function(e){
+          t.dragging = true;
+          t.el.classList.add('is-grabbed');
+          t.el.setPointerCapture(e.pointerId);
+          t.lastX = e.clientX; t.lastY = e.clientY; t.lastT = performance.now();
+          t.vx = 0; t.vy = 0;
+        });
+        t.el.addEventListener('pointermove', function(e){
+          if (!t.dragging) return;
+          var rect = stage.getBoundingClientRect();
+          var now = performance.now();
+          var dt = Math.max(now - t.lastT, 1);
+          t.vx = (e.clientX - t.lastX) / dt * 16;
+          t.vy = (e.clientY - t.lastY) / dt * 16;
+          t.x = Math.min(Math.max(e.clientX - rect.left, t.r), rect.width - t.r);
+          t.y = Math.min(Math.max(e.clientY - rect.top, t.r), rect.height - t.r);
+          t.lastX = e.clientX; t.lastY = e.clientY; t.lastT = now;
+          renderTok(t);
+        });
+        function release(e){
+          if (!t.dragging) return;
+          t.dragging = false;
+          t.el.classList.remove('is-grabbed');
+          try{ t.el.releasePointerCapture(e.pointerId); }catch(err){}
+          if (!reduced && !tokRaf) tokRaf = requestAnimationFrame(tokTick);
         }
+        t.el.addEventListener('pointerup', release);
+        t.el.addEventListener('pointercancel', release);
+      });
+      placeToks();
+      window.addEventListener('resize', placeToks);
+    }
+
+    /* -- 2: swipe stack -- */
+    var swipeStage = document.getElementById('swipeStage');
+    if (swipeStage){
+      var cards = Array.prototype.slice.call(swipeStage.querySelectorAll('.demo-swipe-card'));
+      cards.forEach(function(c){ c.style.position = 'absolute'; c.style.left = '50%'; c.style.top = '50%'; });
+      function layoutCards(){
+        cards.forEach(function(c, i){
+          c.style.zIndex = cards.length - i;
+          c.style.transform = 'translate(-50%,-50%) translateY(' + (i * 6) + 'px) scale(' + (1 - i * 0.05) + ')';
+          c.style.opacity = i > 2 ? '0' : '1';
+        });
+      }
+      function bindTop(){
+        var top = cards[0];
+        if (!top || top._bound) return;
+        top._bound = true;
+        var startX = 0, dragging = false;
+        top.addEventListener('pointerdown', function(e){
+          dragging = true;
+          top.classList.add('dragging');
+          top.setPointerCapture(e.pointerId);
+          startX = e.clientX;
+        });
+        top.addEventListener('pointermove', function(e){
+          if (!dragging) return;
+          var dx = e.clientX - startX;
+          top.style.transform = 'translate(calc(-50% + ' + dx + 'px),-50%) rotate(' + (dx / 12) + 'deg)';
+        });
+        function end(e){
+          if (!dragging) return;
+          dragging = false;
+          top.classList.remove('dragging');
+          var dx = e.clientX - startX;
+          if (Math.abs(dx) > 70){
+            var dir = dx > 0 ? 1 : -1;
+            top.style.transition = 'transform .4s var(--ease), opacity .4s var(--ease)';
+            top.style.transform = 'translate(calc(-50% + ' + (dir * 420) + 'px),-50%) rotate(' + (dir * 26) + 'deg)';
+            top.style.opacity = '0';
+            setTimeout(function(){
+              cards.push(cards.shift());
+              top.style.transition = '';
+              top._bound = false;
+              layoutCards();
+              bindTop();
+            }, 380);
+          } else {
+            top.style.transform = 'translate(-50%,-50%)';
+            layoutCards();
+          }
+        }
+        top.addEventListener('pointerup', end);
+        top.addEventListener('pointercancel', end);
+      }
+      layoutCards();
+      bindTop();
+    }
+
+    /* -- 3: charge & release -- */
+    var chargeBtn = document.getElementById('chargeBtn');
+    if (chargeBtn){
+      var holding = false, triggered = false, startT = 0, chargeRaf = null;
+      var HOLD_MS = 650;
+      function chargeTick(){
+        var p = Math.min((performance.now() - startT) / HOLD_MS, 1) * 100;
+        chargeBtn.style.setProperty('--p', p);
+        if (p >= 100 && !triggered){
+          triggered = true;
+          var rect = chargeBtn.getBoundingClientRect();
+          var cx = rect.left + rect.width / 2, cy = rect.top + rect.height / 2;
+          for (var i = 0; i < 10; i++){
+            (function(i){
+              setTimeout(function(){
+                var a = (i / 10) * Math.PI * 2;
+                spawnSparkAt(cx + Math.cos(a) * 6, cy + Math.sin(a) * 6);
+              }, i * 20);
+            })(i);
+          }
+          if (navigator.vibrate) navigator.vibrate(24);
+        }
+        if (holding) chargeRaf = requestAnimationFrame(chargeTick);
+      }
+      function startCharge(e){
+        holding = true; triggered = false; startT = performance.now();
+        chargeBtn.setPointerCapture(e.pointerId);
+        chargeRaf = requestAnimationFrame(chargeTick);
+      }
+      function endCharge(){
+        holding = false;
+        if (chargeRaf) cancelAnimationFrame(chargeRaf);
+        chargeBtn.style.setProperty('--p', 0);
+      }
+      chargeBtn.addEventListener('pointerdown', startCharge);
+      chargeBtn.addEventListener('pointerup', endCharge);
+      chargeBtn.addEventListener('pointercancel', endCharge);
+      chargeBtn.addEventListener('pointerleave', function(){ if (holding) endCharge(); });
+    }
+
+    /* -- 4: tilt via phone gyroscope, with pointer/touch-drag fallback -- */
+    var tiltCard = document.getElementById('tiltCard');
+    if (tiltCard){
+      var usingOrientation = false;
+      function setTilt(rx, ry){
+        tiltCard.style.setProperty('--rx', rx + 'deg');
+        tiltCard.style.setProperty('--ry', ry + 'deg');
+        tiltCard.classList.add('is-active');
+      }
+      function resetTilt(){
+        tiltCard.style.setProperty('--rx', '0deg');
+        tiltCard.style.setProperty('--ry', '0deg');
+        tiltCard.classList.remove('is-active');
+      }
+      function onOrientation(e){
+        if (e.beta === null || e.gamma === null) return;
+        usingOrientation = true;
+        var ry = Math.max(-24, Math.min(24, e.gamma));
+        var rx = Math.max(-24, Math.min(24, e.beta - 45));
+        setTilt(-rx * 0.5, ry * 0.9);
+      }
+      tiltCard.addEventListener('pointermove', function(e){
+        if (usingOrientation) return;
+        var rect = tiltCard.getBoundingClientRect();
+        setTilt(((e.clientY - rect.top) / rect.height - 0.5) * -18, ((e.clientX - rect.left) / rect.width - 0.5) * 18);
+      });
+      tiltCard.addEventListener('pointerleave', function(){ if (!usingOrientation) resetTilt(); });
+      tiltCard.addEventListener('touchmove', function(e){
+        if (usingOrientation || !e.touches[0]) return;
+        var rect = tiltCard.getBoundingClientRect();
+        var t = e.touches[0];
+        setTilt(((t.clientY - rect.top) / rect.height - 0.5) * -18, ((t.clientX - rect.left) / rect.width - 0.5) * 18);
+        e.preventDefault();
+      }, { passive: false });
+      tiltCard.addEventListener('touchend', function(){ if (!usingOrientation) resetTilt(); });
+      if (window.DeviceOrientationEvent){
+        if (typeof DeviceOrientationEvent.requestPermission === 'function'){
+          tiltCard.addEventListener('pointerdown', function grantOnce(){
+            DeviceOrientationEvent.requestPermission().then(function(res){
+              if (res === 'granted') window.addEventListener('deviceorientation', onOrientation);
+            }).catch(function(){});
+            tiltCard.removeEventListener('pointerdown', grantOnce);
+          }, { once: true });
+        } else {
+          window.addEventListener('deviceorientation', onOrientation);
+        }
+      }
+    }
+
+    /* -- 5: pinch (touch) / wheel (mouse) to scale -- */
+    var pinchStage = document.getElementById('pinchStage');
+    var pinchShape = document.getElementById('pinchShape');
+    if (pinchStage && pinchShape){
+      var scale = 1, pointers = {}, startDist = 0, startScale = 1, springTimer = null;
+      function applyScale(s){
+        scale = Math.max(0.6, Math.min(1.9, s));
+        pinchShape.style.setProperty('--s', scale);
+      }
+      function scheduleSpring(){
+        clearTimeout(springTimer);
+        springTimer = setTimeout(function(){ applyScale(1); }, 900);
+      }
+      pinchStage.addEventListener('pointerdown', function(e){
+        pointers[e.pointerId] = { x: e.clientX, y: e.clientY };
+        if (Object.keys(pointers).length === 2){
+          var pts = Object.keys(pointers).map(function(k){ return pointers[k]; });
+          startDist = Math.hypot(pts[0].x - pts[1].x, pts[0].y - pts[1].y);
+          startScale = scale;
+        }
+        pinchStage.setPointerCapture(e.pointerId);
+      });
+      pinchStage.addEventListener('pointermove', function(e){
+        if (!pointers[e.pointerId]) return;
+        pointers[e.pointerId] = { x: e.clientX, y: e.clientY };
+        var keys = Object.keys(pointers);
+        if (keys.length === 2){
+          var pts = keys.map(function(k){ return pointers[k]; });
+          var dist = Math.hypot(pts[0].x - pts[1].x, pts[0].y - pts[1].y);
+          if (startDist > 0) applyScale(startScale * (dist / startDist));
+        }
+      });
+      function clearPointer(e){
+        delete pointers[e.pointerId];
+        if (Object.keys(pointers).length < 2) scheduleSpring();
+      }
+      pinchStage.addEventListener('pointerup', clearPointer);
+      pinchStage.addEventListener('pointercancel', clearPointer);
+      pinchStage.addEventListener('wheel', function(e){
+        e.preventDefault();
+        applyScale(scale - e.deltaY * 0.0015);
+        scheduleSpring();
+      }, { passive: false });
+    }
+
+    /* -- 6: haptic tap (real vibration on phones, visual feedback everywhere) -- */
+    var hapticBtn = document.getElementById('hapticBtn');
+    if (hapticBtn){
+      hapticBtn.addEventListener('pointerdown', function(e){
+        if (navigator.vibrate) navigator.vibrate(16);
+        var rect = hapticBtn.getBoundingClientRect();
+        var r = document.createElement('span');
+        r.className = 'demo-ripple';
+        var size = Math.max(rect.width, rect.height) * 1.6;
+        r.style.width = size + 'px';
+        r.style.height = size + 'px';
+        r.style.left = (e.clientX - rect.left) + 'px';
+        r.style.top = (e.clientY - rect.top) + 'px';
+        hapticBtn.appendChild(r);
+        r.addEventListener('animationend', function(){ r.remove(); });
+        spawnSparkAt(e.clientX, e.clientY);
       });
     }
   })();
