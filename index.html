@@ -1123,10 +1123,13 @@
     { x: 0.78, y: 0.85, r: 360, c: '240,194,116', s: 0.00017, ph: 1.4 },
     { x: 0.18, y: 0.88, r: 320, c: '255,143,214', s: 0.00014, ph: 3.0 }
   ];
-  /* phones skip the two least-visible orbs to cut fill cost further */
-  var activeOrbs = isPhone ? orbs.slice(0, 3) : orbs;
+  /* phones keep only the two orbs nearest the fold to cut fill cost further —
+     gradient creation, not just the fill, is the expensive part on weak GPUs */
+  var activeOrbs = isPhone ? orbs.slice(0, 2) : orbs;
+  var canvasLive = true;
 
   function draw(t){
+    if (!canvasLive) return;
     ctx.clearRect(0, 0, w, h);
     for (var i = 0; i < activeOrbs.length; i++){
       var o = activeOrbs[i];
@@ -1139,13 +1142,33 @@
       ctx.fillStyle = grad;
       ctx.fillRect(0, 0, w, h);
     }
-    /* phones redraw at ~20fps instead of 60 — the wobble is slow and subtle
-       enough that the drop isn't visible, but it's a third of the paint cost */
+    /* phones redraw at ~2-3fps instead of 60 — the wobble drifts over many
+       seconds, so the drop is invisible, but it keeps the main thread free
+       for scrolling instead of fighting it every 16ms */
     if (!reduced){
-      if (isPhone) setTimeout(function(){ requestAnimationFrame(draw); }, 48);
+      if (isPhone) setTimeout(function(){ requestAnimationFrame(draw); }, 380);
       else requestAnimationFrame(draw);
     }
   }
+
+  /* stop entirely while the tab is hidden or the page is mid-scroll-snap on
+     phones — one redraw right after scroll settles is enough to keep up */
+  if (isPhone){
+    var scrollPauseTimer = null;
+    window.addEventListener('scroll', function(){
+      canvasLive = false;
+      clearTimeout(scrollPauseTimer);
+      scrollPauseTimer = setTimeout(function(){ canvasLive = true; draw(performance.now()); }, 220);
+    }, { passive: true });
+  }
+  document.addEventListener('visibilitychange', function(){
+    if (document.hidden){
+      canvasLive = false;
+    } else if (!canvasLive){
+      canvasLive = true;
+      draw(performance.now());
+    }
+  });
 
   resize();
   window.addEventListener('resize', resize);
